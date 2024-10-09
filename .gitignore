@@ -1,0 +1,9 @@
+/.idea/
+/etc/.kubeconfig
+/etc/cloudserver/.credentials
+/etc/tls/.certificateIssuance.credentials
+/etc/tls/certs/fullchain.pem
+/etc/tls/private/privkey.pem
+/iac/.terraform*
+/iac/terraform.tfvars*
+/iac/terraform.tfstate*
