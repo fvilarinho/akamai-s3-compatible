@@ -21,5 +21,7 @@ resource "local_sensitive_file" "stackCredentials" {
 [default]
 aws_access_key_id=${var.settings.cluster.accessKey}
 aws_secret_access_key=${var.settings.cluster.secretKey}
+region=us-east-1
+output=json
 EOT
 }
