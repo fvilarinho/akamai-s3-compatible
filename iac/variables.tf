@@ -11,7 +11,7 @@ variable "settings" {
       tags      = [ "storage" ]
       region    = "br-gru"
       type      = "g6-standard-4"
-      count     = 1
+      count     = 3
       accessKey = "<accessKey>"
       secretKey = "<secretKey>"
       storage   = {

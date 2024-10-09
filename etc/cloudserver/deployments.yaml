@@ -16,6 +16,7 @@ spec:
       containers:
         - name: cloudserver
           image: zenko/cloudserver:latest-7.70.10
+          imagePullPolicy: Always
           env:
             - name: S3DATA
               value: "multiple"
@@ -59,7 +60,8 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: nginx:latest
+          image: nginx:alpine3.20
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 80
@@ -85,3 +87,61 @@ spec:
         - name: nginx-tls-certificate-key
           configMap:
             name: nginx-tls-certificate-key
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-broker
+  namespace: ${NAMESPACE}
+  labels:
+    app: kafka-broker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-broker
+  template:
+    metadata:
+      labels:
+        app: kafka-broker
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: kafka-broker
+          image: bitnami/kafka:3.7.0
+          imagePullPolicy: Always
+          env:
+            - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+              value: "zookeeper:2181"
+          ports:
+            - containerPort: 9092
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper
+  namespace: ${NAMESPACE}
+  labels:
+    app: zookeeper
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: zookeeper
+          image: bitnami/zookeeper:3.8.4
+          imagePullPolicy: Always
+          env:
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"
+          ports:
+            - containerPort: 2181

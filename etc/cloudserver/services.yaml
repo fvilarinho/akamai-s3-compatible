@@ -27,3 +27,34 @@ spec:
       targetPort: 8000
   selector:
     app: cloudserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-broker
+  namespace: ${NAMESPACE}
+  labels:
+    app: kafka-broker
+spec:
+  ports:
+    - name: backend
+      port: 9092
+      targetPort: 9092
+  selector:
+    app: kafka-broker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+  namespace: ${NAMESPACE}
+  labels:
+    app: zookeeper
+spec:
+  ports:
+    - name: backend
+      port: 2181
+      targetPort: 2181
+  selector:
+    app: zookeeper
+---
