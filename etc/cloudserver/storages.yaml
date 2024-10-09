@@ -7,7 +7,7 @@ spec:
   accessModes: [ "ReadWriteOnce" ]
   resources:
     requests:
-      storage: 10Gi
+      storage: ${STORAGE_DATA_SIZE}Gi
   storageClassName: linode-block-storage
 ---
 apiVersion: v1
@@ -19,5 +19,5 @@ spec:
   accessModes: [ "ReadWriteOnce" ]
   resources:
     requests:
-      storage: 10Gi
+      storage: ${STORAGE_METADATA_SIZE}Gi
   storageClassName: linode-block-storage

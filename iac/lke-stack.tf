@@ -28,6 +28,8 @@ resource "null_resource" "applyStack" {
       STACK_STORAGES_FILENAME    = local.stackStoragesFilename
       STACK_DEPLOYMENTS_FILENAME = local.stackDeploymentsFilename
       STACK_SERVICES_FILENAME    = local.stackServicesFilename
+      STORAGE_DATA_SIZE          = var.settings.cluster.storage.dataSize
+      STORAGE_METADATA_SIZE      = var.settings.cluster.storage.metaDataSize
     }
 
     quiet   = true

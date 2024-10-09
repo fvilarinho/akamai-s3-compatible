@@ -55,6 +55,18 @@ function checkDependencies() {
 
     exit 1
   fi
+
+  if [ -z "$STORAGE_DATA_SIZE" ]; then
+    echo "The storage data size is not defined! Please define it first to continue!"
+
+    exit 1
+  fi
+
+  if [ -z "$STORAGE_METADATA_SIZE" ]; then
+    echo "The storage metadata size is not defined! Please define it first to continue!"
+
+    exit 1
+  fi
 }
 
 # Applies the stack namespaces replacing the placeholders with the correspondent environment variable value.
@@ -82,6 +94,8 @@ function applyStackStorages() {
 
   cp -f "$manifestFilename" "$manifestFilename".tmp
   sed -i -e 's|${NAMESPACE}|'"$NAMESPACE"'|g' "$manifestFilename".tmp
+  sed -i -e 's|${STORAGE_DATA_SIZE}|'"$STORAGE_DATA_SIZE"'|g' "$manifestFilename".tmp
+  sed -i -e 's|${STORAGE_METADATA_SIZE}|'"$STORAGE_METADATA_SIZE"'|g' "$manifestFilename".tmp
 
   $KUBECTL_CMD apply -f "$manifestFilename".tmp
 

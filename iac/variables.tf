@@ -14,6 +14,10 @@ variable "settings" {
       count     = 1
       accessKey = "<accessKey>"
       secretKey = "<secretKey>"
+      storage   = {
+        dataSize     = 10
+        metaDataSize = 10
+      }
     }
   }
 }
