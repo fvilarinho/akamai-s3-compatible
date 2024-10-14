@@ -2,7 +2,6 @@
 locals {
   applyStackScriptFilename               = abspath(pathexpand("../bin/applyStack.sh"))
   fetchStackOriginHostnameScriptFilename = abspath(pathexpand("../bin/fetchStackOriginHostname.sh"))
-  stackHostname                          = "${var.settings.general.hostname}.${var.settings.general.domain}"
   stackDeploymentsFilename               = abspath(pathexpand("../etc/deployments.yaml"))
   stackServicesFilename                  = abspath(pathexpand("../etc/services.yaml"))
 }
@@ -19,11 +18,12 @@ resource "null_resource" "applyStack" {
     environment = {
       KUBECONFIG           = local.kubeconfigFilename
       NAMESPACE            = var.settings.cluster.namespace
-      HOSTNAME             = local.stackHostname
-      STORAGE_DATA_SIZE    = var.settings.cluster.storage.dataSize
-      REPLICAS             = var.settings.cluster.nodes.count
       ACCESS_KEY           = var.settings.cluster.credentials.accessKey
       SECRET_KEY           = var.settings.cluster.credentials.secretKey
+      REPLICAS             = var.settings.cluster.nodes.count
+      HOSTNAME             = local.hostname
+      ADMIN_HOSTNAME       = local.adminHostname
+      STORAGE_DATA_SIZE    = var.settings.cluster.storage.dataSize
       DEPLOYMENTS_FILENAME = local.stackDeploymentsFilename
       SERVICES_FILENAME    = local.stackServicesFilename
     }

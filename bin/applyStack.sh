@@ -69,6 +69,7 @@ function applyStackSettings() {
   cp -f "$configFilename" "$configFilename".tmp
 
   sed -i -e 's|${HOSTNAME}|'"$HOSTNAME"'|g' "$configFilename".tmp
+  sed -i -e 's|${ADMIN_HOSTNAME}|'"$ADMIN_HOSTNAME"'|g' "$configFilename".tmp
 
   $KUBECTL_CMD create configmap nginx-settings --from-file=default.conf="$configFilename".tmp -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
   $KUBECTL_CMD create configmap nginx-tls-certificate --from-file=../etc/tls/certs/fullchain.pem -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
