@@ -1,12 +1,12 @@
 locals {
   domain        = "${var.settings.general.hostname}.${var.settings.general.domain}"
-  hostname      = local.domain
-  adminHostname = "admin.${local.domain}"
+  hostname      = var.settings.general.domain
+  adminHostname = "admin.${var.settings.general.domain}"
 }
 
 # Definition of the default DNS domain.
 resource "linode_domain" "default" {
-  domain    = local.domain
+  domain    = var.settings.general.domain
   type      = "master"
   soa_email = var.settings.general.email
   ttl_sec   = 30

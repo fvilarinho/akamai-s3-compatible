@@ -38,6 +38,7 @@ function issueTheCertificate() {
                  --dns-linode \
                  --dns-linode-credentials "$CERTIFICATE_ISSUANCE_CREDENTIALS_FILENAME" \
                  --dns-linode-propagation-seconds "$CERTIFICATE_ISSUANCE_PROPAGATION_DELAY" \
+                 --domain "$DOMAIN" \
                  --domain "*.$DOMAIN" \
                  --email "$EMAIL"
 
