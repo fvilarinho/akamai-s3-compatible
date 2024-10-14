@@ -5,14 +5,22 @@ locals {
 
 # Definition of the K8S cluster to deploy the stack.
 resource "linode_lke_cluster" "default" {
-  k8s_version = "1.30"
+  k8s_version = "1.31"
   label       = var.settings.cluster.label
   tags        = var.settings.cluster.tags
-  region      = var.settings.cluster.region
+  region      = var.settings.cluster.nodes.region
 
   pool {
-    type  = var.settings.cluster.type
-    count = var.settings.cluster.count
+    type = var.settings.cluster.nodes.type
+
+    autoscaler {
+      max = var.settings.cluster.nodes.maxCount
+      min = var.settings.cluster.nodes.minCount
+    }
+  }
+
+  control_plane {
+    high_availability = true
   }
 }
 

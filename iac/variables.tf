@@ -10,12 +10,21 @@ variable "settings" {
       namespace = "akamai-s3-compatible"
       label     = "akamai-s3-compatible"
       tags      = [ "storage" ]
-      region    = "br-gru"
-      type      = "g6-standard-4"
-      count     = 3
-      accessKey = "<accessKey>"
-      secretKey = "<secretKey>"
-      storage   = {
+
+      credentials = {
+        accessKey = "<accessKey>"
+        secretKey = "<secretKey>"
+      }
+
+      nodes = {
+        type         = "g6-standard-4"
+        region       = "br-gru"
+        defaultCount = 4
+        minCount     = 4
+        maxCount     = 4
+      }
+
+      storage = {
         dataSize = 10
       }
     }

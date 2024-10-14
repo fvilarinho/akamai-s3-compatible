@@ -4,7 +4,8 @@ metadata:
   name: minio
   namespace: ${NAMESPACE}
 spec:
-  replicas: 1
+  serviceName: minio
+  replicas: ${REPLICAS}
   selector:
     matchLabels:
       app: minio
@@ -15,11 +16,11 @@ spec:
     spec:
       containers:
         - name: minio
-          image: minio/minio:latest
+          image: minio/minio:RELEASE.2024-10-13T13-34-11Z
           imagePullPolicy: Always
           args:
             - server
-            - /data
+            - http://minio-{0...3}.minio.${NAMESPACE}.svc.cluster.local/data
             - --console-address
             - ":9001"
           env:
@@ -37,17 +38,23 @@ spec:
           volumeMounts:
             - name: data-volume
               mountPath: /data
-      volumes:
-        - name: data-volume
-          persistentVolumeClaim:
-            claimName: data-claim
+  volumeClaimTemplates:
+    - metadata:
+        name: data-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: ${STORAGE_DATA_SIZE}
+        storageClassName: linode-block-storage
 ---
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: nginx
   namespace: ${NAMESPACE}
 spec:
+  replicas: ${REPLICAS}
   selector:
     matchLabels:
       app: nginx

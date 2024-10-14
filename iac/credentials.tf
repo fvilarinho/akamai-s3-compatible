@@ -19,8 +19,8 @@ resource "local_sensitive_file" "stackCredentials" {
   filename = local.stackCredentialsFilename
   content = <<EOT
 [default]
-aws_access_key_id=${var.settings.cluster.accessKey}
-aws_secret_access_key=${var.settings.cluster.secretKey}
+aws_access_key_id=${var.settings.cluster.credentials.accessKey}
+aws_secret_access_key=${var.settings.cluster.credentials.secretKey}
 region=us-east-1
 output=json
 EOT
