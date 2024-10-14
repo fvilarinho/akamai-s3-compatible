@@ -1,4 +1,48 @@
 apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx
+  namespace: ${NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine3.20
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+          volumeMounts:
+            - name: nginx-settings
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            - name: nginx-tls-certificate
+              mountPath: /etc/tls/certs/fullchain.pem
+              subPath: fullchain.pem
+            - name: nginx-tls-certificate-key
+              mountPath: /etc/tls/private/privkey.pem
+              subPath: privkey.pem
+      volumes:
+        - name: nginx-settings
+          configMap:
+            name: nginx-settings
+        - name: nginx-tls-certificate
+          configMap:
+            name: nginx-tls-certificate
+        - name: nginx-tls-certificate-key
+          configMap:
+            name: nginx-tls-certificate-key
+---
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: minio
@@ -47,48 +91,3 @@ spec:
           requests:
             storage: ${STORAGE_DATA_SIZE}
         storageClassName: linode-block-storage
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx
-  namespace: ${NAMESPACE}
-spec:
-  replicas: ${REPLICAS}
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: nginx
-          image: nginx:alpine3.20
-          imagePullPolicy: Always
-          ports:
-            - name: http
-              containerPort: 80
-            - name: https
-              containerPort: 443
-          volumeMounts:
-            - name: nginx-settings
-              mountPath: /etc/nginx/conf.d/default.conf
-              subPath: default.conf
-            - name: nginx-tls-certificate
-              mountPath: /etc/tls/certs/fullchain.pem
-              subPath: fullchain.pem
-            - name: nginx-tls-certificate-key
-              mountPath: /etc/tls/private/privkey.pem
-              subPath: privkey.pem
-      volumes:
-        - name: nginx-settings
-          configMap:
-            name: nginx-settings
-        - name: nginx-tls-certificate
-          configMap:
-            name: nginx-tls-certificate
-        - name: nginx-tls-certificate-key
-          configMap:
-            name: nginx-tls-certificate-key

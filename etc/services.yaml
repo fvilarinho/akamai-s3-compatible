@@ -5,6 +5,8 @@ metadata:
   namespace: ${NAMESPACE}
 spec:
   type: LoadBalancer
+  selector:
+    app: nginx
   ports:
     - name: http
       port: 80
@@ -12,8 +14,6 @@ spec:
     - name: https
       port: 443
       targetPort: 443
-  selector:
-    app: nginx
 ---
 apiVersion: v1
 kind: Service
@@ -21,6 +21,8 @@ metadata:
   name: minio
   namespace: ${NAMESPACE}
 spec:
+  selector:
+    app: minio
   ports:
     - name: api
       port: 9000
@@ -28,5 +30,3 @@ spec:
     - name: admin
       port: 9001
       targetPort: 9001
-  selector:
-    app: minio

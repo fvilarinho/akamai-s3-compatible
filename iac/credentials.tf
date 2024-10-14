@@ -1,7 +1,7 @@
 # Required variables.
 locals {
   apiCredentialsFilename                 = abspath(pathexpand("~/.aws/credentials"))
-  stackCredentialsFilename               = abspath(pathexpand("../etc/minio/.credentials"))
+  stackCredentialsFilename               = abspath(pathexpand("../etc/.credentials"))
   certificateIssuanceCredentialsFilename = abspath(pathexpand("../etc/tls/.certificateIssuance.credentials"))
 }
 

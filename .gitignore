@@ -1,6 +1,6 @@
 /.idea/
+/etc/.credentials
 /etc/.kubeconfig
-/etc/minio/.credentials
 /etc/tls/.certificateIssuance.credentials
 /etc/tls/certs/fullchain.pem
 /etc/tls/private/privkey.pem

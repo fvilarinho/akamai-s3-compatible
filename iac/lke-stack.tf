@@ -1,7 +1,7 @@
 # Required variables.
 locals {
-  applyStackScriptFilename               = abspath(pathexpand("../bin/minio/applyStack.sh"))
-  fetchStackOriginHostnameScriptFilename = abspath(pathexpand("../bin/minio/fetchStackOriginHostname.sh"))
+  applyStackScriptFilename               = abspath(pathexpand("../bin/applyStack.sh"))
+  fetchStackOriginHostnameScriptFilename = abspath(pathexpand("../bin/fetchStackOriginHostname.sh"))
   stackHostname                          = "${var.settings.general.hostname}.${var.settings.general.domain}"
   stackDeploymentsFilename               = abspath(pathexpand("../etc/deployments.yaml"))
   stackServicesFilename                  = abspath(pathexpand("../etc/services.yaml"))
@@ -21,7 +21,7 @@ resource "null_resource" "applyStack" {
       NAMESPACE            = var.settings.cluster.namespace
       HOSTNAME             = local.stackHostname
       STORAGE_DATA_SIZE    = var.settings.cluster.storage.dataSize
-      REPLICAS             = var.settings.cluster.nodes.maxCount
+      REPLICAS             = var.settings.cluster.nodes.count
       ACCESS_KEY           = var.settings.cluster.credentials.accessKey
       SECRET_KEY           = var.settings.cluster.credentials.secretKey
       DEPLOYMENTS_FILENAME = local.stackDeploymentsFilename

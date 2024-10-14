@@ -17,11 +17,9 @@ variable "settings" {
       }
 
       nodes = {
-        type         = "g6-standard-4"
-        region       = "br-gru"
-        defaultCount = 4
-        minCount     = 4
-        maxCount     = 6
+        type   = "g6-standard-4"
+        region = "br-gru"
+        count  = 4
       }
 
       storage = {

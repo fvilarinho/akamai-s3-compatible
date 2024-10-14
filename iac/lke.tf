@@ -11,12 +11,8 @@ resource "linode_lke_cluster" "default" {
   region      = var.settings.cluster.nodes.region
 
   pool {
-    type = var.settings.cluster.nodes.type
-
-    autoscaler {
-      max = var.settings.cluster.nodes.maxCount
-      min = var.settings.cluster.nodes.minCount
-    }
+    type  = var.settings.cluster.nodes.type
+    count = var.settings.cluster.nodes.count
   }
 
   control_plane {
