@@ -1,8 +1,9 @@
 variable "settings" {
   default = {
     general = {
-      email  = "<your-email>"
-      domain = "<your-domain>"
+      email    = "<your-email>"
+      domain   = "<your-domain>"
+      hostname = "<hostname>"
     }
 
     cluster = {
@@ -15,8 +16,7 @@ variable "settings" {
       accessKey = "<accessKey>"
       secretKey = "<secretKey>"
       storage   = {
-        dataSize     = 10
-        metaDataSize = 10
+        dataSize = 10
       }
     }
   }

@@ -32,6 +32,12 @@ function checkDependencies() {
     exit 1
   fi
 
+  if [ -z "$STACK_UI_HOSTNAME" ]; then
+    echo "The stack UI hostname is not defined! Please define it first to continue!"
+
+    exit 1
+  fi
+
   if [ -z "$STACK_NAMESPACES_FILENAME" ]; then
     echo "The stack namespaces file is not defined! Please define it first to continue!"
 
@@ -61,12 +67,6 @@ function checkDependencies() {
 
     exit 1
   fi
-
-  if [ -z "$STORAGE_METADATA_SIZE" ]; then
-    echo "The storage metadata size is not defined! Please define it first to continue!"
-
-    exit 1
-  fi
 }
 
 # Applies the stack namespaces replacing the placeholders with the correspondent environment variable value.
@@ -83,19 +83,27 @@ function applyStackNamespaces() {
 
 # Applies the stack settings replacing the placeholders with the correspondent environment variable value.
 function applyStackSettings() {
-  $KUBECTL_CMD create configmap nginx-settings --from-file=../etc/nginx/conf.d/default.conf -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
+  configFilename=../etc/nginx/conf.d/default.conf
+
+  cp -f "$configFilename" "$configFilename".tmp
+
+  sed -i -e 's|${STACK_HOSTNAME}|'"$STACK_HOSTNAME"'|g' "$configFilename".tmp
+  sed -i -e 's|${STACK_UI_HOSTNAME}|'"$STACK_UI_HOSTNAME"'|g' "$configFilename".tmp
+
+  $KUBECTL_CMD create configmap nginx-settings --from-file=default.conf="$configFilename".tmp -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
   $KUBECTL_CMD create configmap nginx-tls-certificate --from-file=../etc/tls/certs/fullchain.pem -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
   $KUBECTL_CMD create configmap nginx-tls-certificate-key --from-file=../etc/tls/private/privkey.pem -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
+
+  rm -f "$configFilename".tmp*
 }
 
 # Applies the stack storages replacing the placeholders with the correspondent environment variable value.
 function applyStackStorages() {
   manifestFilename="$STACK_STORAGES_FILENAME"
 
-  cp -f "$manifestFilename" "$manifestFilename".tmp
+  cp -f "$manifestFilename" "$manifestFilename"\.tmp
   sed -i -e 's|${NAMESPACE}|'"$NAMESPACE"'|g' "$manifestFilename".tmp
   sed -i -e 's|${STORAGE_DATA_SIZE}|'"$STORAGE_DATA_SIZE"'|g' "$manifestFilename".tmp
-  sed -i -e 's|${STORAGE_METADATA_SIZE}|'"$STORAGE_METADATA_SIZE"'|g' "$manifestFilename".tmp
 
   $KUBECTL_CMD apply -f "$manifestFilename".tmp
 
@@ -110,7 +118,6 @@ function applyStackDeployments() {
   sed -i -e 's|${NAMESPACE}|'"$NAMESPACE"'|g' "$manifestFilename".tmp
   sed -i -e 's|${ACCESS_KEY}|'"$ACCESS_KEY"'|g' "$manifestFilename".tmp
   sed -i -e 's|${SECRET_KEY}|'"$SECRET_KEY"'|g' "$manifestFilename".tmp
-  sed -i -e 's|${STACK_HOSTNAME}|'"$STACK_HOSTNAME"'|g' "$manifestFilename".tmp
 
   $KUBECTL_CMD apply -f "$manifestFilename".tmp
 

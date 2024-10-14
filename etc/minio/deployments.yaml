@@ -1,48 +1,46 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: cloudserver
+  name: minio
   namespace: ${NAMESPACE}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cloudserver
+      app: minio
   template:
     metadata:
       labels:
-        app: cloudserver
+        app: minio
     spec:
       containers:
-        - name: cloudserver
-          image: zenko/cloudserver:latest-7.70.10
+        - name: minio
+          image: minio/minio:latest
           imagePullPolicy: Always
+          args:
+            - server
+            - /data
+            - --console-address
+            - ":9001"
           env:
-            - name: S3DATA
-              value: "multiple"
-            - name: REMOTE_MANAGEMENT_DISABLE
-              value: "true"
-            - name: SCALITY_ACCESS_KEY_ID
+            - name: MINIO_BROWSER_REDIRECT
+              value: "false"
+            - name: MINIO_ACCESS_KEY
               value: "${ACCESS_KEY}"
-            - name: SCALITY_SECRET_ACCESS_KEY
+            - name: MINIO_SECRET_KEY
               value: "${SECRET_KEY}"
-            - name: ENDPOINT
-              value: "${STACK_HOSTNAME}"
           ports:
-            - name: http
-              containerPort: 8000
+            - name: api
+              containerPort: 9000
+            - name: frontend
+              containerPort: 9001
           volumeMounts:
             - name: data-volume
-              mountPath: /usr/src/app/localData
-            - name: metadata-volume
-              mountPath: /usr/src/app/localMetadata
+              mountPath: /data
       volumes:
         - name: data-volume
           persistentVolumeClaim:
             claimName: data-claim
-        - name: metadata-volume
-          persistentVolumeClaim:
-            claimName: metadata-claim
 ---
 apiVersion: apps/v1
 kind: DaemonSet

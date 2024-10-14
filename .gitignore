@@ -1,6 +1,6 @@
 /.idea/
 /etc/.kubeconfig
-/etc/cloudserver/.credentials
+/etc/minio/.credentials
 /etc/tls/.certificateIssuance.credentials
 /etc/tls/certs/fullchain.pem
 /etc/tls/private/privkey.pem
