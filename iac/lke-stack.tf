@@ -3,8 +3,8 @@ locals {
   applyStackScriptFilename               = abspath(pathexpand("../bin/minio/applyStack.sh"))
   fetchStackOriginHostnameScriptFilename = abspath(pathexpand("../bin/minio/fetchStackOriginHostname.sh"))
   stackHostname                          = "${var.settings.general.hostname}.${var.settings.general.domain}"
-  stackDeploymentsFilename               = abspath(pathexpand("../etc/minio/deployments.yaml"))
-  stackServicesFilename                  = abspath(pathexpand("../etc/minio/services.yaml"))
+  stackDeploymentsFilename               = abspath(pathexpand("../etc/deployments.yaml"))
+  stackServicesFilename                  = abspath(pathexpand("../etc/services.yaml"))
 }
 
 # Applies the stack files.

@@ -21,7 +21,7 @@ variable "settings" {
         region       = "br-gru"
         defaultCount = 4
         minCount     = 4
-        maxCount     = 4
+        maxCount     = 6
       }
 
       storage = {
