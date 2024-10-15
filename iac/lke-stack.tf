@@ -32,7 +32,11 @@ resource "null_resource" "applyStack" {
     command = local.applyStackScriptFilename
   }
 
-  depends_on = [ local_sensitive_file.kubeconfig ]
+  depends_on = [
+    local_sensitive_file.kubeconfig,
+    local_sensitive_file.certificate,
+    local_sensitive_file.certificateKey
+  ]
 }
 
 # Fetches the stack origin hostname.

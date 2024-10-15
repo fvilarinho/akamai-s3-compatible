@@ -1,5 +1,4 @@
 locals {
-  domain        = "${var.settings.general.hostname}.${var.settings.general.domain}"
   hostname      = var.settings.general.domain
   adminHostname = "admin.${var.settings.general.domain}"
 }
