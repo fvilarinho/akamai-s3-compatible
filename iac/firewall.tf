@@ -1,8 +1,19 @@
+locals {
+  nodeBalancersIds = [ for nodeBalancer in data.linode_nodebalancers.default.nodebalancers : nodeBalancer.id ]
+}
+
 data "http" "myIp" {
   url = "https://ipinfo.io"
 }
 
-data "linode_nodebalancers" "default" {}
+data "linode_nodebalancers" "default" {
+  filter {
+    name = "ipv4"
+    values = [ data.external.fetchStackOriginHostname.result.ip ]
+  }
+
+  depends_on = [ data.external.fetchStackOriginHostname ]
+}
 
 resource "linode_firewall" "default" {
   label           = "${var.settings.cluster.label}-firewall"
@@ -25,18 +36,10 @@ resource "linode_firewall" "default" {
     ipv6     = var.settings.cluster.allowedIps.ipv6
   }
 
-  depends_on = [ data.http.myIp ]
-}
+  nodebalancers = local.nodeBalancersIds
 
-resource "null_resource" "test" {
-  for_each = { for nodebalancer in data.linode_nodebalancers.default.nodebalancers : nodebalancer.id => nodebalancer }
-
-  triggers = {
-    always_run = timestamp()
-  }
-
-  provisioner "local-exec" {
-    quiet = true
-    command = "echo ${each.value.hostname}"
-  }
+  depends_on = [
+    data.http.myIp,
+    data.linode_nodebalancers.default
+  ]
 }
