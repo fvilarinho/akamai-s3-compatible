@@ -1,17 +1,12 @@
-# Required variables.
-locals {
-  nodeBalancersIds = [ for nodeBalancer in data.linode_nodebalancers.default.nodebalancers : nodeBalancer.id ]
-}
-
 # Fetches the local IP.
 data "http" "myIp" {
   url = "https://ipinfo.io"
 }
 
-# Fetches the node balancers of the stack.
+# Fetches the stack node balancers.
 data "linode_nodebalancers" "default" {
   filter {
-    name = "ipv4"
+    name   = "ipv4"
     values = [ data.external.fetchStackOriginHostname.result.ip ]
   }
 
@@ -40,10 +35,12 @@ resource "linode_firewall" "default" {
     ipv6     = var.settings.cluster.allowedIps.ipv6
   }
 
-  nodebalancers = local.nodeBalancersIds
+  nodebalancers = [ for nodeBalancer in data.linode_nodebalancers.default.nodebalancers : nodeBalancer.id ]
 
   depends_on = [
     data.http.myIp,
-    data.linode_nodebalancers.default
+    data.external.fetchStackOriginHostname,
+    data.linode_nodebalancers.default,
+    null_resource.applyStack
   ]
 }

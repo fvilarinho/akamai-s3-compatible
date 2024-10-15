@@ -46,6 +46,4 @@ data "external" "fetchStackOriginHostname" {
     local.kubeconfigFilename,
     var.settings.cluster.namespace
   ]
-
-  depends_on = [ null_resource.applyStack ]
 }

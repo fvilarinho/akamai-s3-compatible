@@ -89,5 +89,5 @@ spec:
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
-            storage: ${STORAGE_DATA_SIZE}
+            storage: ${STORAGE_DATA_SIZE}G
         storageClassName: linode-block-storage
