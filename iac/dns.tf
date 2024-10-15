@@ -1,3 +1,4 @@
+# Required variables.
 locals {
   hostname      = var.settings.general.domain
   adminHostname = "admin.${var.settings.general.domain}"
