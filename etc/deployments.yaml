@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: nginx
   namespace: ${NAMESPACE}
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: nginx
@@ -91,3 +92,26 @@ spec:
           requests:
             storage: ${STORAGE_DATA_SIZE}G
         storageClassName: linode-block-storage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodered
+  namespace: ${NAMESPACE}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: nodered
+  template:
+    metadata:
+      labels:
+        app: nodered
+    spec:
+      containers:
+        - name: nodered
+          image: nodered/node-red:latest
+          imagePullPolicy: Always
+          ports:
+            - name: frontend
+              containerPort: 1880

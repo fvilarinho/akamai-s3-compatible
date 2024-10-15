@@ -23,6 +23,7 @@ resource "null_resource" "applyStack" {
       REPLICAS             = var.settings.cluster.nodes.count
       HOSTNAME             = local.hostname
       ADMIN_HOSTNAME       = local.adminHostname
+      WEBHOOKS_HOSTNAME    = local.webhooksHostname
       STORAGE_DATA_SIZE    = var.settings.cluster.storage.dataSize
       DEPLOYMENTS_FILENAME = local.stackDeploymentsFilename
       SERVICES_FILENAME    = local.stackServicesFilename

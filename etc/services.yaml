@@ -30,3 +30,16 @@ spec:
     - name: admin
       port: 9001
       targetPort: 9001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodered
+  namespace: ${NAMESPACE}
+spec:
+  selector:
+    app: nodered
+  ports:
+    - name: frontend
+      port: 1880
+      targetPort: 1880

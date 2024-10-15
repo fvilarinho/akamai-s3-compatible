@@ -2,6 +2,7 @@
 locals {
   hostname      = var.settings.general.domain
   adminHostname = "admin.${var.settings.general.domain}"
+  webhooksHostname = "webhooks.${var.settings.general.domain}"
 }
 
 # Definition of the default DNS domain.
@@ -29,6 +30,19 @@ resource "linode_domain_record" "default" {
 resource "linode_domain_record" "admin" {
   domain_id   = linode_domain.default.id
   name        = local.adminHostname
+  record_type = "A"
+  target      = data.external.fetchStackOriginHostname.result.ip
+  ttl_sec     = 30
+  depends_on  = [
+    linode_domain.default,
+    data.external.fetchStackOriginHostname
+  ]
+}
+
+# Definition of the DNS entry for the webhooks
+resource "linode_domain_record" "webhooks" {
+  domain_id   = linode_domain.default.id
+  name        = local.webhooksHostname
   record_type = "A"
   target      = data.external.fetchStackOriginHostname.result.ip
   ttl_sec     = 30

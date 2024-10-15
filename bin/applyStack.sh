@@ -38,6 +38,18 @@ function checkDependencies() {
     exit 1
   fi
 
+  if [ -z "$ADMIN_HOSTNAME" ]; then
+    echo "The admin hostname is not defined! Please define it first to continue!"
+
+    exit 1
+  fi
+
+  if [ -z "$WEBHOOKS_HOSTNAME" ]; then
+    echo "The webhooks hostname is not defined! Please define it first to continue!"
+
+    exit 1
+  fi
+
   if [ -z "$DEPLOYMENTS_FILENAME" ]; then
     echo "The deployments file is not defined! Please define it first to continue!"
 
@@ -70,6 +82,7 @@ function applyStackSettings() {
 
   sed -i -e 's|${HOSTNAME}|'"$HOSTNAME"'|g' "$configFilename".tmp
   sed -i -e 's|${ADMIN_HOSTNAME}|'"$ADMIN_HOSTNAME"'|g' "$configFilename".tmp
+  sed -i -e 's|${WEBHOOKS_HOSTNAME}|'"$WEBHOOKS_HOSTNAME"'|g' "$configFilename".tmp
 
   $KUBECTL_CMD create configmap nginx-settings --from-file=default.conf="$configFilename".tmp -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
   $KUBECTL_CMD create configmap nginx-tls-certificate --from-file=../etc/tls/certs/fullchain.pem -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
