@@ -4,7 +4,7 @@ metadata:
   name: nginx
   namespace: ${NAMESPACE}
 spec:
-  replicas: 1
+  replicas: ${REPLICAS}
   selector:
     matchLabels:
       app: nginx
@@ -99,7 +99,7 @@ metadata:
   name: nodered
   namespace: ${NAMESPACE}
 spec:
-  replicas: ${REPLICAS}
+  replicas: 1
   selector:
     matchLabels:
       app: nodered
