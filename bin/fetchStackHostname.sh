@@ -19,8 +19,8 @@ function checkDependencies() {
   fi
 }
 
-# Fetches the origin hostname.
-function fetchOrigin() {
+# Fetches the stack hostname.
+function fetchStackHostname() {
   checkDependencies "$1" "$2"
 
   HOSTNAME=
@@ -33,20 +33,14 @@ function fetchOrigin() {
                             -o json | $JQ_CMD -r '.status.loadBalancer.ingress[].hostname')
 
     if [ -n "$HOSTNAME" ]; then
-      IP=$($KUBECTL_CMD get service ingress \
-                        -n "$NAMESPACE" \
-                        -o json | $JQ_CMD -r '.status.loadBalancer.ingress[].ip')
-
-      if [ -n "$IP" ]; then
-        break
-      fi
+      break
     fi
 
     sleep 5
   done
 
   # Returns the fetched hostname.
-  echo "{\"ip\": \"$IP\", \"hostname\": \"$HOSTNAME\"}"
+  echo "{\"hostname\": \"$HOSTNAME\"}"
 }
 
-fetchOrigin "$1" "$2"
+fetchStackHostname "$1" "$2"

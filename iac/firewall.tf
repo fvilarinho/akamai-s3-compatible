@@ -6,16 +6,16 @@ data "http" "myIp" {
 # Fetches the stack node balancers.
 data "linode_nodebalancers" "default" {
   filter {
-    name   = "ipv4"
-    values = [ data.external.fetchStackOriginHostname.result.ip ]
+    name   = "hostname"
+    values = [ data.external.fetchStackHostname.result.hostname ]
   }
 
-  depends_on = [ data.external.fetchStackOriginHostname ]
+  depends_on = [ data.external.fetchStackHostname ]
 }
 
 # Definition of the firewall rules.
 resource "linode_firewall" "default" {
-  label           = "${var.settings.cluster.label}-firewall"
+  label           = "${var.settings.cluster.namespace}-firewall"
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
 
@@ -39,7 +39,7 @@ resource "linode_firewall" "default" {
 
   depends_on = [
     data.http.myIp,
-    data.external.fetchStackOriginHostname,
+    data.external.fetchStackHostname,
     data.linode_nodebalancers.default,
     null_resource.applyStack
   ]

@@ -17,12 +17,12 @@ resource "linode_domain" "default" {
 resource "linode_domain_record" "default" {
   domain_id   = linode_domain.default.id
   name        = local.hostname
-  record_type = "A"
-  target      = data.external.fetchStackOriginHostname.result.ip
+  record_type = "CNAME"
+  target      = data.external.fetchStackHostname.result.hostname
   ttl_sec     = 30
   depends_on  = [
     linode_domain.default,
-    data.external.fetchStackOriginHostname
+    data.external.fetchStackHostname
   ]
 }
 
@@ -30,12 +30,12 @@ resource "linode_domain_record" "default" {
 resource "linode_domain_record" "admin" {
   domain_id   = linode_domain.default.id
   name        = local.adminHostname
-  record_type = "A"
-  target      = data.external.fetchStackOriginHostname.result.ip
+  record_type = "CNAME"
+  target      = data.external.fetchStackHostname.result.hostname
   ttl_sec     = 30
   depends_on  = [
     linode_domain.default,
-    data.external.fetchStackOriginHostname
+    data.external.fetchStackHostname
   ]
 }
 
@@ -43,11 +43,11 @@ resource "linode_domain_record" "admin" {
 resource "linode_domain_record" "webhooks" {
   domain_id   = linode_domain.default.id
   name        = local.webhooksHostname
-  record_type = "A"
-  target      = data.external.fetchStackOriginHostname.result.ip
+  record_type = "CNAME"
+  target      = data.external.fetchStackHostname.result.ip
   ttl_sec     = 30
   depends_on  = [
     linode_domain.default,
-    data.external.fetchStackOriginHostname
+    data.external.fetchStackHostname
   ]
 }

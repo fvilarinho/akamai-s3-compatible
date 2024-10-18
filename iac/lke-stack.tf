@@ -1,9 +1,9 @@
 # Required variables.
 locals {
-  applyStackScriptFilename               = abspath(pathexpand("../bin/applyStack.sh"))
-  fetchStackOriginHostnameScriptFilename = abspath(pathexpand("../bin/fetchStackOriginHostname.sh"))
-  stackDeploymentsFilename               = abspath(pathexpand("../etc/deployments.yaml"))
-  stackServicesFilename                  = abspath(pathexpand("../etc/services.yaml"))
+  applyStackScriptFilename         = abspath(pathexpand("../bin/applyStack.sh"))
+  fetchStackHostnameScriptFilename = abspath(pathexpand("../bin/fetchStackHostname.sh"))
+  stackDeploymentsFilename         = abspath(pathexpand("../etc/deployments.yaml"))
+  stackServicesFilename            = abspath(pathexpand("../etc/services.yaml"))
 }
 
 # Applies the stack files.
@@ -40,10 +40,10 @@ resource "null_resource" "applyStack" {
   ]
 }
 
-# Fetches the stack origin hostname.
-data "external" "fetchStackOriginHostname" {
+# Fetches the stack hostname.
+data "external" "fetchStackHostname" {
   program = [
-    local.fetchStackOriginHostnameScriptFilename,
+    local.fetchStackHostnameScriptFilename,
     local.kubeconfigFilename,
     var.settings.cluster.namespace
   ]
