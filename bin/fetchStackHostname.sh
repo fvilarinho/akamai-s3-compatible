@@ -33,14 +33,20 @@ function fetchStackHostname() {
                             -o json | $JQ_CMD -r '.status.loadBalancer.ingress[].hostname')
 
     if [ -n "$HOSTNAME" ]; then
-      break
+      IP=$($KUBECTL_CMD get service ingress \
+                        -n "$NAMESPACE" \
+                        -o json | $JQ_CMD -r '.status.loadBalancer.ingress[].ip')
+
+      if [ -n "$IP" ]; then
+        break
+      fi
     fi
 
     sleep 5
   done
 
   # Returns the fetched hostname.
-  echo "{\"hostname\": \"$HOSTNAME\"}"
+  echo "{\"ip\": \"$IP\", \"hostname\": \"$HOSTNAME\"}"
 }
 
 fetchStackHostname "$1" "$2"

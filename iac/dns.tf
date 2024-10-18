@@ -17,8 +17,8 @@ resource "linode_domain" "default" {
 resource "linode_domain_record" "default" {
   domain_id   = linode_domain.default.id
   name        = local.hostname
-  record_type = "CNAME"
-  target      = data.external.fetchStackHostname.result.hostname
+  record_type = "A"
+  target      = data.external.fetchStackHostname.result.ip
   ttl_sec     = 30
   depends_on  = [
     linode_domain.default,
@@ -44,7 +44,7 @@ resource "linode_domain_record" "webhooks" {
   domain_id   = linode_domain.default.id
   name        = local.webhooksHostname
   record_type = "CNAME"
-  target      = data.external.fetchStackHostname.result.ip
+  target      = data.external.fetchStackHostname.result.hostname
   ttl_sec     = 30
   depends_on  = [
     linode_domain.default,
