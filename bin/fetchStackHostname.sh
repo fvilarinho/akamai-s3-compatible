@@ -5,7 +5,7 @@ function checkDependencies() {
   export KUBECONFIG="$1"
 
   if [ -z "$KUBECONFIG" ]; then
-    echo "The kubeconfig filename is not defined! Please define it first to continue!"
+    echo "The cluster kubeconfig filename is not defined! Please define it first to continue!"
 
     exit 1
   fi
@@ -13,7 +13,7 @@ function checkDependencies() {
   export NAMESPACE="$2"
 
   if [ -z "$NAMESPACE" ]; then
-    echo "The namespace is not defined! Please define it first to continue!"
+    echo "The cluster namespace is not defined! Please define it first to continue!"
 
     exit 1
   fi

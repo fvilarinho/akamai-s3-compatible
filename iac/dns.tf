@@ -9,6 +9,7 @@ locals {
 resource "linode_domain" "default" {
   domain    = var.settings.general.domain
   type      = "master"
+  tags      = concat(var.settings.cluster.tags, [ var.settings.cluster.namespace ])
   soa_email = var.settings.general.email
   ttl_sec   = 30
 }

@@ -3,13 +3,13 @@
 # Check the dependencies of this script.
 function checkDependencies() {
   if [ -z "$KUBECONFIG" ]; then
-    echo "The kubeconfig filename is not defined! Please define it first to continue!"
+    echo "The cluster kubeconfig filename is not defined! Please define it first to continue!"
 
     exit 1
   fi
 
   if [ -z "$NAMESPACE" ]; then
-    echo "The namespace is not defined! Please define it first to continue!"
+    echo "The cluster namespace is not defined! Please define it first to continue!"
 
     exit 1
   fi
@@ -119,8 +119,8 @@ function applyStackServices() {
   rm -f "$manifestFilename".tmp*
 }
 
-# Applies the stack.
-function applyStack() {
+# Applies the stack manifests.
+function applyStackManifests() {
   applyStackNamespaces
   applyStackSettings
   applyStackDeployments
@@ -130,7 +130,7 @@ function applyStack() {
 # Main function.
 function main() {
   checkDependencies
-  applyStack
+  applyStackManifests
 }
 
 main

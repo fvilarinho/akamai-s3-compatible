@@ -9,7 +9,7 @@ variable "settings" {
     cluster = {
       namespace = "akamai-s3-compatible"
       label     = "akamai-s3-compatible"
-      tags      = [ "storage" ]
+      tags      = [ "demo" ]
 
       credentials = {
         accessKey = "<accessKey>"

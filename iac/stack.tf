@@ -1,16 +1,17 @@
 # Required variables.
 locals {
-  applyStackScriptFilename         = abspath(pathexpand("../bin/applyStack.sh"))
-  fetchStackHostnameScriptFilename = abspath(pathexpand("../bin/fetchStackHostname.sh"))
-  stackDeploymentsFilename         = abspath(pathexpand("../etc/deployments.yaml"))
-  stackServicesFilename            = abspath(pathexpand("../etc/services.yaml"))
+  applyStackManifestsScriptFilename     = abspath(pathexpand("../bin/applyStackManifests.sh"))
+  applyStackLabelsAndTagsScriptFilename = abspath(pathexpand("../bin/applyStackLabelsAndTags.sh"))
+  fetchStackHostnameScriptFilename      = abspath(pathexpand("../bin/fetchStackHostname.sh"))
+  stackDeploymentsFilename              = abspath(pathexpand("../etc/deployments.yaml"))
+  stackServicesFilename                 = abspath(pathexpand("../etc/services.yaml"))
 }
 
 # Applies the stack files.
-resource "null_resource" "applyStack" {
+resource "null_resource" "applyStackManifests" {
   # Executes only when a change happened.
   triggers = {
-    always_run = "${filemd5(local.applyStackScriptFilename)}|${filemd5(local.stackDeploymentsFilename)}|${filemd5(local.stackServicesFilename)}"
+    always_run = "${filemd5(local.applyStackManifestsScriptFilename)}|${filemd5(local.stackDeploymentsFilename)}|${filemd5(local.stackServicesFilename)}"
   }
 
   provisioner "local-exec" {
@@ -30,7 +31,7 @@ resource "null_resource" "applyStack" {
     }
 
     quiet   = true
-    command = local.applyStackScriptFilename
+    command = local.applyStackManifestsScriptFilename
   }
 
   depends_on = [
@@ -38,6 +39,22 @@ resource "null_resource" "applyStack" {
     local_sensitive_file.certificate,
     local_sensitive_file.certificateKey
   ]
+}
+
+# Applies the stack labels and tags.
+resource "null_resource" "applyStackLabelsAndTags" {
+  provisioner "local-exec" {
+    environment = {
+      KUBECONFIG = local.kubeconfigFilename
+      NAMESPACE  = var.settings.cluster.namespace
+      TAGS       = join(" ", var.settings.cluster.tags)
+    }
+
+    quiet   = true
+    command = local.applyStackLabelsAndTagsScriptFilename
+  }
+
+  depends_on = [ null_resource.applyStackManifests ]
 }
 
 # Fetches the stack hostname.
@@ -48,5 +65,5 @@ data "external" "fetchStackHostname" {
     var.settings.cluster.namespace
   ]
 
-  depends_on = [ null_resource.applyStack ]
+  depends_on = [ null_resource.applyStackManifests ]
 }

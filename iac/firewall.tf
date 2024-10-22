@@ -15,7 +15,8 @@ data "linode_nodebalancers" "default" {
 
 # Definition of the firewall rules.
 resource "linode_firewall" "default" {
-  label           = "${var.settings.cluster.namespace}-firewall"
+  label           = "${var.settings.cluster.label}-firewall"
+  tags            = concat(var.settings.cluster.tags, [ var.settings.cluster.namespace] )
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
 
@@ -39,8 +40,7 @@ resource "linode_firewall" "default" {
 
   depends_on = [
     data.http.myIp,
-    data.external.fetchStackHostname,
     data.linode_nodebalancers.default,
-    null_resource.applyStack
+    null_resource.applyStackManifests
   ]
 }
