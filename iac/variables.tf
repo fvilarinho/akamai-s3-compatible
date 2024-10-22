@@ -8,7 +8,7 @@ variable "settings" {
 
     cluster = {
       namespace = "akamai-s3-compatible"
-      label     = "akamai-s3-compatible"
+      label     = "minio"
       tags      = [ "demo" ]
 
       credentials = {
