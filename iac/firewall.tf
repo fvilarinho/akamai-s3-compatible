@@ -1,9 +1,8 @@
 locals {
-  nodeBalancersToBeProtected = [ for nodeBalancer in data.linode_nodebalancers.toBeProtected.nodebalancers : nodeBalancer.id ]
-  nodesToBeProtected         = flatten([ for pool in linode_lke_cluster.default.pool : [ for node in pool.nodes : node.instance_id ] ])
-  allowedPublicIps           = concat([ for node in data.linode_instances.toBeProtected.instances : "${node.ip_address}/32" ], [ "${jsondecode(data.http.myIp.response_body).ip}/32" ])
-  allowedPrivateIps          = [ for node in data.linode_instances.toBeProtected.instances : "${node.private_ip_address}/32" ]
-  allowedIpv4                = concat(var.settings.cluster.allowedIps.ipv4, concat(local.allowedPublicIps, local.allowedPrivateIps))
+  nodesToBeProtected = flatten([ for pool in linode_lke_cluster.default.pool : [ for node in pool.nodes : node.instance_id ] ])
+  allowedPublicIps   = concat([ for node in data.linode_instances.toBeProtected.instances : "${node.ip_address}/32" ], [ "${jsondecode(data.http.myIp.response_body).ip}/32" ])
+  allowedPrivateIps  = [ for node in data.linode_instances.toBeProtected.instances : "${node.private_ip_address}/32" ]
+  allowedIpv4        = concat(var.settings.cluster.allowedIps.ipv4, concat(local.allowedPublicIps, local.allowedPrivateIps))
 }
 
 # Fetches the local IP.
@@ -19,16 +18,6 @@ data "linode_instances" "toBeProtected" {
   }
 
   depends_on = [ linode_lke_cluster.default ]
-}
-
-# Fetches all stack Node Balancers to be protected in the Cloud Firewall.
-data "linode_nodebalancers" "toBeProtected" {
-  filter {
-    name   = "hostname"
-    values = [ data.external.fetchStackHostname.result.hostname ]
-  }
-
-  depends_on = [ data.external.fetchStackHostname ]
 }
 
 # Definition of the firewall rules.
@@ -108,12 +97,10 @@ resource "linode_firewall" "default" {
     ipv6     = var.settings.cluster.allowedIps.ipv6
   }
 
-  nodebalancers = local.nodeBalancersToBeProtected
   linodes       = local.nodesToBeProtected
 
   depends_on = [
     data.http.myIp,
-    data.linode_nodebalancers.toBeProtected,
     data.linode_instances.toBeProtected
   ]
 }
