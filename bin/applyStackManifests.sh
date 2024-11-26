@@ -93,6 +93,7 @@ function applyStackSettings() {
   $KUBECTL_CMD create configmap nginx-settings --from-file=default.conf="$configFilename".tmp -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
   $KUBECTL_CMD create configmap nginx-tls-certificate --from-file=../etc/tls/certs/fullchain.pem -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
   $KUBECTL_CMD create configmap nginx-tls-certificate-key --from-file=../etc/tls/private/privkey.pem -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
+  $KUBECTL_CMD create configmap nginx-credentials-filename --from-file=../etc/nginx/conf.d/.htpasswd -n "$NAMESPACE" -o yaml --dry-run=client | $KUBECTL_CMD apply -f -
 
   rm -f "$configFilename".tmp*
 }

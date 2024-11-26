@@ -1,8 +1,8 @@
 # Required variables.
 locals {
-  apiCredentialsFilename                 = abspath(pathexpand("~/.aws/credentials"))
-  stackCredentialsFilename               = abspath(pathexpand("../etc/minio/.credentials"))
   certificateIssuanceCredentialsFilename = abspath(pathexpand("../etc/tls/.certificateIssuance.credentials"))
+  storageCredentialsFilename             = abspath(pathexpand("../etc/minio/.credentials"))
+  webhooksCredentialsFilename            = abspath(pathexpand("../etc/nginx/conf.d/.htpasswd"))
 }
 
 # Creates the certificate issuance credentials filename.
@@ -15,13 +15,20 @@ EOT
 }
 
 # Creates the stack credentials filename.
-resource "local_sensitive_file" "stackCredentials" {
-  filename = local.stackCredentialsFilename
+resource "local_sensitive_file" "storageCredentials" {
+  filename = local.storageCredentialsFilename
   content = <<EOT
 [default]
 aws_access_key_id=${var.settings.cluster.credentials.accessKey}
 aws_secret_access_key=${var.settings.cluster.credentials.secretKey}
 region=us-east-1
 output=json
+EOT
+}
+
+resource "local_sensitive_file" "webhooksCredentials" {
+  filename = local.webhooksCredentialsFilename
+  content = <<EOT
+${var.settings.cluster.credentials.accessKey}:${bcrypt(var.settings.cluster.credentials.secretKey)}
 EOT
 }

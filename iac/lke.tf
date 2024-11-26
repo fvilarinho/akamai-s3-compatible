@@ -31,7 +31,9 @@ resource "linode_lke_cluster" "default" {
     data.http.myIp,
     null_resource.certificateIssuance,
     local_sensitive_file.certificate,
-    local_sensitive_file.certificateKey
+    local_sensitive_file.certificateKey,
+    local_sensitive_file.storageCredentials,
+    local_sensitive_file.webhooksCredentials
   ]
 }
 

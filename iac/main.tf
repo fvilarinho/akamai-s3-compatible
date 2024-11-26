@@ -29,5 +29,5 @@ terraform {
 
 # Akamai Cloud Computing provider definition.
 provider "linode" {
-  config_path = local.apiCredentialsFilename
+  token = var.settings.general.token
 }

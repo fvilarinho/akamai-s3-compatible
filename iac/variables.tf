@@ -1,9 +1,9 @@
 variable "settings" {
   default = {
     general = {
-      email    = "<your-email>"
-      domain   = "<your-domain>"
-      hostname = "<hostname>"
+      email  = "<your-email>"
+      domain = "<your-domain>"
+      token  = "<token>"
     }
 
     cluster = {

@@ -31,6 +31,9 @@ spec:
             - name: nginx-tls-certificate-key
               mountPath: /etc/tls/private/privkey.pem
               subPath: privkey.pem
+            - name: nginx-credentials-filename
+              mountPath: /etc/nginx/conf.d/.htpasswd
+              subPath: .htpasswd
       volumes:
         - name: nginx-settings
           configMap:
@@ -41,6 +44,9 @@ spec:
         - name: nginx-tls-certificate-key
           configMap:
             name: nginx-tls-certificate-key
+        - name: nginx-credentials-filename
+          configMap:
+            name: nginx-credentials-filename
 ---
 apiVersion: apps/v1
 kind: StatefulSet
