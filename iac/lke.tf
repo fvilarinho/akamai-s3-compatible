@@ -17,7 +17,22 @@ resource "linode_lke_cluster" "default" {
 
   control_plane {
     high_availability = true
+
+    acl {
+      enabled = true
+
+      addresses {
+        ipv4 = [ "${jsondecode(data.http.myIp.response_body).ip}/32" ]
+      }
+    }
   }
+
+  depends_on = [
+    data.http.myIp,
+    null_resource.certificateIssuance,
+    local_sensitive_file.certificate,
+    local_sensitive_file.certificateKey
+  ]
 }
 
 # Saves the K8S cluster configuration file used to connect into it.

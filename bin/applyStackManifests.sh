@@ -32,6 +32,12 @@ function checkDependencies() {
     exit 1
   fi
 
+  if [ -z "$REPLICAS_RANGE" ]; then
+    echo "The replicas range is not defined! Please define it first to continue!"
+
+    exit 1
+  fi
+
   if [ -z "$HOSTNAME" ]; then
     echo "The hostname is not defined! Please define it first to continue!"
 
@@ -100,6 +106,7 @@ function applyStackDeployments() {
   sed -i -e 's|${ACCESS_KEY}|'"$ACCESS_KEY"'|g' "$manifestFilename".tmp
   sed -i -e 's|${SECRET_KEY}|'"$SECRET_KEY"'|g' "$manifestFilename".tmp
   sed -i -e 's|${REPLICAS}|'"$REPLICAS"'|g' "$manifestFilename".tmp
+  sed -i -e 's|${REPLICAS_RANGE}|'"$REPLICAS_RANGE"'|g' "$manifestFilename".tmp
   sed -i -e 's|${STORAGE_DATA_SIZE}|'"$STORAGE_DATA_SIZE"'|g' "$manifestFilename".tmp
 
   $KUBECTL_CMD apply -f "$manifestFilename".tmp

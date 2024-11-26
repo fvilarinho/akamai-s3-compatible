@@ -1,10 +1,9 @@
 # Required variables.
 locals {
-  applyStackManifestsScriptFilename     = abspath(pathexpand("../bin/applyStackManifests.sh"))
-  applyStackLabelsAndTagsScriptFilename = abspath(pathexpand("../bin/applyStackLabelsAndTags.sh"))
-  fetchStackHostnameScriptFilename      = abspath(pathexpand("../bin/fetchStackHostname.sh"))
-  stackDeploymentsFilename              = abspath(pathexpand("../etc/deployments.yaml"))
-  stackServicesFilename                 = abspath(pathexpand("../etc/services.yaml"))
+  applyStackManifestsScriptFilename = abspath(pathexpand("../bin/applyStackManifests.sh"))
+  fetchStackHostnameScriptFilename  = abspath(pathexpand("../bin/fetchStackHostname.sh"))
+  stackDeploymentsFilename          = abspath(pathexpand("../etc/deployments.yaml"))
+  stackServicesFilename             = abspath(pathexpand("../etc/services.yaml"))
 }
 
 # Applies the stack files.
@@ -22,6 +21,7 @@ resource "null_resource" "applyStackManifests" {
       ACCESS_KEY           = var.settings.cluster.credentials.accessKey
       SECRET_KEY           = var.settings.cluster.credentials.secretKey
       REPLICAS             = var.settings.cluster.nodes.count
+      REPLICAS_RANGE       = "0...${(var.settings.cluster.nodes.count - 1)}"
       HOSTNAME             = local.hostname
       ADMIN_HOSTNAME       = local.adminHostname
       WEBHOOKS_HOSTNAME    = local.webhooksHostname
@@ -35,29 +35,12 @@ resource "null_resource" "applyStackManifests" {
   }
 
   depends_on = [
-    local_sensitive_file.kubeconfig,
-    local_sensitive_file.certificate,
-    local_sensitive_file.certificateKey
+    linode_lke_cluster.default,
+    local_sensitive_file.kubeconfig
   ]
 }
 
-# Applies the stack labels and tags.
-resource "null_resource" "applyStackLabelsAndTags" {
-  provisioner "local-exec" {
-    environment = {
-      KUBECONFIG = local.kubeconfigFilename
-      NAMESPACE  = var.settings.cluster.namespace
-      TAGS       = join(" ", var.settings.cluster.tags)
-    }
-
-    quiet   = true
-    command = local.applyStackLabelsAndTagsScriptFilename
-  }
-
-  depends_on = [ null_resource.applyStackManifests ]
-}
-
-# Fetches the stack hostname.
+# Fetches the stack hostname (Load Balancer).
 data "external" "fetchStackHostname" {
   program = [
     local.fetchStackHostnameScriptFilename,

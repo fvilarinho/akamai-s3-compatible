@@ -37,7 +37,7 @@ resource "local_sensitive_file" "certificate" {
   count      = (fileexists("/etc/letsencrypt/live/${var.settings.general.domain}/fullchain.pem") ? 1 : 0)
   filename   = local.certificateFilename
   content    = file("/etc/letsencrypt/live/${var.settings.general.domain}/fullchain.pem")
-  depends_on = [ null_resource.certificateIssuance]
+  depends_on = [ null_resource.certificateIssuance ]
 }
 
 # Saves the issued certificate key locally to enable HTTPs traffic in Gitea.
@@ -45,5 +45,5 @@ resource "local_sensitive_file" "certificateKey" {
   count      = (fileexists("/etc/letsencrypt/live/${var.settings.general.domain}/privkey.pem") ? 1 : 0)
   filename   = local.certificateKeyFilename
   content    = file("/etc/letsencrypt/live/${var.settings.general.domain}/privkey.pem")
-  depends_on = [ null_resource.certificateIssuance]
+  depends_on = [ null_resource.certificateIssuance ]
 }

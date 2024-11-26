@@ -1,10 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: nginx
   namespace: ${NAMESPACE}
 spec:
-  replicas: ${REPLICAS}
   selector:
     matchLabels:
       app: nginx
@@ -65,7 +64,7 @@ spec:
           imagePullPolicy: Always
           args:
             - server
-            - http://minio-{0...3}.minio.${NAMESPACE}.svc.cluster.local/data
+            - http://minio-{${REPLICAS_RANGE}}.minio.${NAMESPACE}.svc.cluster.local/data
             - --console-address
             - ":9001"
           env:

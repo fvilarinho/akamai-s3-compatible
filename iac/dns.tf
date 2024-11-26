@@ -1,7 +1,7 @@
 # Required variables.
 locals {
-  hostname      = var.settings.general.domain
-  adminHostname = "admin.${var.settings.general.domain}"
+  hostname         = var.settings.general.domain
+  adminHostname    = "admin.${var.settings.general.domain}"
   webhooksHostname = "webhooks.${var.settings.general.domain}"
 }
 
@@ -21,10 +21,7 @@ resource "linode_domain_record" "default" {
   record_type = "A"
   target      = data.external.fetchStackHostname.result.ip
   ttl_sec     = 30
-  depends_on  = [
-    linode_domain.default,
-    data.external.fetchStackHostname
-  ]
+  depends_on  = [ data.external.fetchStackHostname ]
 }
 
 # Definition of the DNS entry for the admin UI.
@@ -34,10 +31,7 @@ resource "linode_domain_record" "admin" {
   record_type = "CNAME"
   target      = data.external.fetchStackHostname.result.hostname
   ttl_sec     = 30
-  depends_on  = [
-    linode_domain.default,
-    data.external.fetchStackHostname
-  ]
+  depends_on  = [ data.external.fetchStackHostname ]
 }
 
 # Definition of the DNS entry for the webhooks
@@ -47,8 +41,5 @@ resource "linode_domain_record" "webhooks" {
   record_type = "CNAME"
   target      = data.external.fetchStackHostname.result.hostname
   ttl_sec     = 30
-  depends_on  = [
-    linode_domain.default,
-    data.external.fetchStackHostname
-  ]
+  depends_on  = [ data.external.fetchStackHostname ]
 }
